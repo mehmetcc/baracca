@@ -2,7 +2,6 @@ package mapper;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -18,64 +17,63 @@ import java.util.List;
  *
  * @author Mehmet Can Altuntaş github.com/mehmetcc
  */
+class Mapper<T> {
 
+    // Variables
+    private final ObjectMapper mapper;
+    private final Class<T> clazz;
 
-public class Mapper<T> {
+    // Constructors
+    Mapper(Class<T> clazz) {
+        AnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
 
-  // Variables
-  private final ObjectMapper mapper;
-  private final Class<T> clazz;
+        mapper = new ObjectMapper();
+        mapper.getDeserializationConfig().with(introspector);
+        mapper.getSerializationConfig().with(introspector);
 
-  // Constructors
-  public Mapper(Class<T> clazz) {
-    AnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
+        this.clazz = clazz;
+    }
 
-    mapper = new ObjectMapper();
-    mapper.getDeserializationConfig().with(introspector);
-    mapper.getSerializationConfig().with(introspector);
+    private static <U> List<U> readList(String json, ObjectMapper mapper, Class<U> clazz)
+            throws IOException {
+        return mapper.readValue(json, reflectAsList(mapper, clazz));
+    }
 
-    this.clazz = clazz;
-  }
+    private static <U> List<U> readList(InputStream stream, ObjectMapper mapper, Class<U> clazz)
+            throws IOException {
+        return mapper.readValue(stream, reflectAsList(mapper, clazz));
+    }
 
-  // Methods
-  public String write(List<T> list) throws JsonProcessingException {
-    return mapper.writeValueAsString(list);
-  }
+    private static <U> JavaType reflectAsList(ObjectMapper mapper, Class<U> clazz) {
+        return mapper.getTypeFactory().constructCollectionType(List.class, clazz);
+    }
 
-  public String write(T obj) throws JsonProcessingException {
-    return mapper.writeValueAsString(obj);
-  }
+    // Methods
+    public String write(List<T> list) throws JsonProcessingException {
+        return mapper.writeValueAsString(list);
+    }
 
-  public List<T> readList(String json)
-      throws JsonParseException, JsonMappingException, IOException {
-    return readList(json, mapper, clazz);
-  }
-  public List<T> readList(InputStream stream)
-      throws JsonParseException, JsonMappingException, IOException {
-      return readList(stream, mapper, clazz);
-  }
+    public String write(T obj) throws JsonProcessingException {
+        return mapper.writeValueAsString(obj);
+    }
 
-  public T readObject(String json)
-      throws JsonProcessingException, JsonMappingException, IOException {
-    return mapper.readValue(json, clazz);
-  }
+    public List<T> readList(String json)
+            throws IOException {
+        return readList(json, mapper, clazz);
+    }
 
-  public T readObject(InputStream stream)
-          throws JsonProcessingException, JsonMappingException, IOException{
-      return mapper.readValue(stream, clazz);
-  }
+    public List<T> readList(InputStream stream)
+            throws IOException {
+        return readList(stream, mapper, clazz);
+    }
 
-  private static <U> List<U> readList(String json, ObjectMapper mapper, Class<U> clazz)
-      throws JsonParseException, JsonMappingException, IOException {
-    return mapper.readValue(json, reflectAsList(mapper, clazz));
-  }
+    public T readObject(String json)
+            throws IOException {
+        return mapper.readValue(json, clazz);
+    }
 
-  private static <U> List<U> readList(InputStream stream, ObjectMapper mapper, Class<U> clazz)
-      throws JsonParseException, JsonMappingException, IOException {
-    return mapper.readValue(stream, reflectAsList(mapper, clazz));
-  }
-
-  private static <U> JavaType reflectAsList(ObjectMapper mapper, Class<U> clazz) {
-    return mapper.getTypeFactory().constructCollectionType(List.class, clazz);
-  }
+    public T readObject(InputStream stream)
+            throws IOException {
+        return mapper.readValue(stream, clazz);
+    }
 }

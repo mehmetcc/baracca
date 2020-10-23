@@ -19,7 +19,8 @@ public class DataStructure<T> {
         this.data = t;
     }
 
-    public DataStructure() { }
+    public DataStructure() {
+    }
 
     public T getData() {
         return data;
@@ -30,5 +31,7 @@ public class DataStructure<T> {
     }
 
     @Override
-    public String toString() { return "success!!!!"; }
+    public String toString() {
+        return "success!!!!";
+    }
 }
