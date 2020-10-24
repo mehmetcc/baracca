@@ -44,4 +44,6 @@ public class ObjectMapper<T> {
 
         return obj;
     }
+
+    public Class getReflection() { return clazz; }
 }

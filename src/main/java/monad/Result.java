@@ -1,5 +1,7 @@
 package monad;
 
+import org.springframework.http.HttpStatus;
+
 /**
  * DAVID DAVENPORT'UN ASKERLERİYİZ
  *
@@ -12,4 +14,6 @@ public interface Result<T> {
     T get() throws Exception;
 
     T orElse(T value);
+
+    HttpStatus getHttpStatusCode();
 }
