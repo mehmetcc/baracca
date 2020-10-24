@@ -1,7 +1,8 @@
-import mapper.ListMapper;
-import pojo.User;
-
-import java.util.ArrayList;
+import fetch.Get;
+import fetch.Success;
+import mapper.ObjectMapper;
+import monad.Monad;
+import pojo.Todo;
 
 /**
  * DAVID DAVENPORT'UN ASKERLERİYİZ
@@ -11,7 +12,11 @@ import java.util.ArrayList;
  */
 public class Driver {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+
+        ObjectMapper<Todo> mapper = new ObjectMapper<>(Todo.class);
+
+         Monad<Todo> todo = Get.from("https://jsonplaceholder.typicode.com/todos/1", mapper);
 
     }
 }
